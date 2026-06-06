@@ -1,17 +1,27 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { ThreeDRose } from '@/components/ui/ThreeDRose';
 
 const ABOUT_BODY =
   'Studio 7 is a group of seven business administration students at HSB University. Our shared space for project work, research, and professional growth — where data meets design.';
 
-export function AboutSection() {
-  const sectionRef  = useRef<HTMLElement>(null);
-  const displayRef  = useRef<HTMLDivElement>(null);
-  const headingRef  = useRef<HTMLHeadingElement>(null);
-  const triggers    = useRef<import('gsap/ScrollTrigger').ScrollTrigger[]>([]);
+const BOTTOM_MOTIFS = [
+  { type: 'line' },
+  { type: 'text', value: 'Studio Seven' },
+  { type: 'star' },
+  { type: 'text', value: 'HSB University' },
+  { type: 'star' },
+  { type: 'text', value: '2025 — Present' },
+  { type: 'line' },
+];
 
-  // Snap is now handled globally by ScrollSnapManager — no local observer needed.
+export function AboutSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const displayRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const bodyRef    = useRef<HTMLParagraphElement>(null);
+  const triggers   = useRef<import('gsap/ScrollTrigger').ScrollTrigger[]>([]);
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -26,31 +36,33 @@ export function AboutSection() {
 
       if (!sectionRef.current) return;
 
+      const bodyEl    = bodyRef.current;
+      const headingEl = headingRef.current;
+      const displayEl = displayRef.current;
+
       ctx = gsap.context(() => {
-        // Neon flicker: fire as soon as section enters viewport from below
-        const displayEl = displayRef.current;
+        if (bodyEl) gsap.set(bodyEl, { opacity: 0, y: 24 });
+
         if (displayEl) {
           const flickerSt = ScrollTrigger.create({
             trigger: sectionRef.current,
             start: 'top bottom',
-            onEnter: () => displayEl.classList.add('neon-flicker'),
+            onEnter:     () => displayEl.classList.add('neon-flicker'),
             onLeaveBack: () => displayEl.classList.remove('neon-flicker'),
           });
           triggers.current.push(flickerSt);
         }
 
-        // Typewriter: "We combine..." heading only — slow, character by character
-        const headingEl = headingRef.current;
         if (headingEl) {
           const text = headingEl.textContent ?? '';
           headingEl.textContent = '';
-          const headingSpans: HTMLSpanElement[] = [];
+          const spans: HTMLSpanElement[] = [];
           Array.from(text).forEach((ch) => {
             const span = document.createElement('span');
             span.textContent = ch;
             span.style.opacity = '0';
             headingEl.appendChild(span);
-            headingSpans.push(span);
+            spans.push(span);
           });
 
           const typeSt = ScrollTrigger.create({
@@ -58,18 +70,20 @@ export function AboutSection() {
             start: 'top top',
             once: true,
             onEnter: () => {
-              gsap.to(headingSpans, {
+              gsap.to(spans, {
                 opacity: 1,
                 duration: 0.05,
                 stagger: { amount: 4.5, from: 'start' },
                 ease: 'none',
+                onComplete: () => {
+                  if (bodyEl) gsap.to(bodyEl, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' });
+                },
               });
             },
           });
           triggers.current.push(typeSt);
         }
 
-        // Refresh after setup so triggers see correct positions after Lenis layout
         gsap.delayedCall(0.1, () => ScrollTrigger.refresh());
       }, sectionRef);
     })();
@@ -95,7 +109,20 @@ export function AboutSection() {
         color: 'var(--primitive-cream)',
       }}
     >
-      {/* Decorative asterisks — top right */}
+      {/* ── 3D Flower — full-section background ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      >
+        <ThreeDRose />
+      </div>
+
+      {/* Decorative asterisks — top-right */}
       <div
         aria-hidden="true"
         style={{
@@ -108,11 +135,10 @@ export function AboutSection() {
           color: 'var(--color-accent-start)',
           lineHeight: 1,
           letterSpacing: '0.1em',
+          zIndex: 3,
         }}
       >
-        <span>✳</span>
-        <span>✳</span>
-        <span>✳</span>
+        <span>✳</span><span>✳</span><span>✳</span>
       </div>
 
       {/* ── Left side ── */}
@@ -124,15 +150,17 @@ export function AboutSection() {
           flexDirection: 'column',
           justifyContent: 'center',
           position: 'relative',
+          zIndex: 2,
         }}
       >
-        {/* Giant display type — persistent glow + JS flicker via ref */}
+        {/* STUDIO SEVEN */}
         <div
           ref={displayRef}
           style={{
             position: 'relative',
             userSelect: 'none',
-            textShadow: '0 0 10px #f4a27a, 0 0 40px rgba(244,162,122,0.55), 0 0 100px rgba(244,162,122,0.2)',
+            textShadow:
+              '0 0 10px #f4a27a, 0 0 40px rgba(244,162,122,0.55), 0 0 100px rgba(244,162,122,0.2)',
           }}
           aria-hidden="true"
         >
@@ -151,7 +179,6 @@ export function AboutSection() {
             <div>SEVEN</div>
           </div>
 
-          {/* Italic overlay — also flickers via parent class */}
           <div
             style={{
               position: 'absolute',
@@ -167,27 +194,30 @@ export function AboutSection() {
               whiteSpace: 'nowrap',
             }}
           >
-            for future
-            <br />
-            leaders
+            for future<br />leaders
           </div>
         </div>
 
         {/* Caption boxes */}
-        <div
-          style={{
-            marginTop: 'clamp(2.5rem, 6vh, 6rem)',
-            display: 'flex',
-            gap: '2.5rem',
-          }}
-        >
+        <div style={{ marginTop: '3.5rem', display: 'flex', gap: '2.5rem' }}>
           {[
             { label: 'Established', value: '2025 — Present' },
-            { label: 'Team Size', value: '7 Students' },
-            { label: 'Program', value: 'Business Admin.' },
+            { label: 'Team Size',   value: '7 Students' },
+            { label: 'Program',     value: 'Business Admin.' },
           ].map(({ label, value }) => (
-            <div key={label} style={{ borderTop: '1px solid rgba(250,250,249,0.18)', paddingTop: '0.875rem' }}>
-              <p style={{ fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--primitive-cream-muted)', marginBottom: '5px' }}>
+            <div
+              key={label}
+              style={{ borderTop: '1px solid rgba(250,250,249,0.18)', paddingTop: '0.875rem' }}
+            >
+              <p
+                style={{
+                  fontSize: '0.6rem',
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  color: 'var(--primitive-cream-muted)',
+                  marginBottom: '5px',
+                }}
+              >
                 {label}
               </p>
               <p style={{ fontSize: '0.875rem', color: 'var(--primitive-cream)', fontWeight: 500 }}>
@@ -206,9 +236,10 @@ export function AboutSection() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
+          position: 'relative',
+          zIndex: 2,
         }}
       >
-        {/* Label */}
         <p
           style={{
             fontSize: '0.65rem',
@@ -226,7 +257,6 @@ export function AboutSection() {
           <span style={{ fontSize: '0.45rem' }}>▶</span>
         </p>
 
-        {/* Italic heading — typewriter via headingRef */}
         <h2
           ref={headingRef}
           style={{
@@ -242,8 +272,8 @@ export function AboutSection() {
           We combine analytical rigour with creative communication to craft work that resonates.
         </h2>
 
-        {/* Body text */}
         <p
+          ref={bodyRef}
           style={{
             fontSize: 'clamp(0.875rem, 1.2vw, 1rem)',
             lineHeight: 1.8,
@@ -253,40 +283,66 @@ export function AboutSection() {
         >
           {ABOUT_BODY}
         </p>
+      </div>
 
-        {/* Circular button */}
-        <button
-          aria-label="Studio 7 scroll to explore"
-          style={{
-            marginTop: '3rem',
-            width: '80px',
-            height: '80px',
-            borderRadius: '9999px',
-            border: '1px solid rgba(250,250,249,0.25)',
-            background: 'transparent',
-            color: 'var(--primitive-cream)',
-            cursor: 'pointer',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '4px',
-            transition: 'border-color 0.2s ease, background 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--color-accent-start)';
-            (e.currentTarget as HTMLButtonElement).style.background = 'rgba(244,162,122,0.08)';
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(250,250,249,0.25)';
-            (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-          }}
-        >
-          <span style={{ fontSize: '0.5rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-            Studio
-          </span>
-          <span style={{ fontSize: '1rem' }}>↓</span>
-        </button>
+      {/* ── Bottom motifs ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          bottom: '2rem',
+          left: 0,
+          right: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '1.5rem',
+          zIndex: 3,
+          padding: '0 clamp(1.25rem, 5vw, 5rem)',
+        }}
+      >
+        {BOTTOM_MOTIFS.map((m, i) => {
+          if (m.type === 'line') {
+            return (
+              <span
+                key={i}
+                style={{
+                  display: 'block',
+                  width: '3.5rem',
+                  height: '1px',
+                  background: 'rgba(250,250,249,0.18)',
+                  flexShrink: 0,
+                }}
+              />
+            );
+          }
+          if (m.type === 'star') {
+            return (
+              <span
+                key={i}
+                style={{ fontSize: '0.65rem', color: 'rgba(244,162,122,0.55)' }}
+              >
+                ✦
+              </span>
+            );
+          }
+          return (
+            <span
+              key={i}
+              style={{
+                fontSize: '0.55rem',
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: 'rgba(250,250,249,0.28)',
+                whiteSpace: 'nowrap',
+                fontFamily: '"DM Sans", system-ui, sans-serif',
+                fontWeight: 500,
+              }}
+            >
+              {m.value}
+            </span>
+          );
+        })}
       </div>
     </section>
   );

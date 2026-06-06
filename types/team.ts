@@ -29,6 +29,8 @@ export interface TeamMember {
   role: string;
   avatar: string;
   avatar_alt: string;
+  avatar_top?: string;
+  hero_bg?: string;
   linkedin: string;
   github: string;
   skills: string[];

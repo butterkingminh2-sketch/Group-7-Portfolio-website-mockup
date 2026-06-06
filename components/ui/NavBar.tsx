@@ -57,9 +57,9 @@ export function NavBar() {
     <header
       className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-[clamp(1.25rem,5vw,5rem)] py-6"
       style={{
-        background: 'rgba(10, 28, 18, 0.72)',
-        backdropFilter: 'blur(16px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+        background: 'rgba(15, 12, 18, 0.45)',
+        backdropFilter: 'blur(20px) saturate(130%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(130%)',
         borderBottom: '1px solid rgba(250, 250, 249, 0.06)',
       }}
     >

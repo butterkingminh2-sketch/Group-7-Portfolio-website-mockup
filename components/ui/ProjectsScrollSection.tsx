@@ -65,7 +65,8 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
           className="relative overflow-hidden"
           style={{ width: '50%', height: '100vh', background: '#f8f8f8' }}
         >
-          {/* "WORKS" watermark — horizontal, follows scroll top→bottom */}
+
+          {/* "WORKS" watermark — spaced edge-to-edge across the left column */}
           <div
             aria-hidden="true"
             style={{
@@ -73,13 +74,14 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
               left: 0,
               right: 0,
               top: 0,
-              textAlign: 'center',
+              display: 'flex',
+              justifyContent: 'space-between',
+              padding: '0 clamp(0.75rem, 2vw, 2rem)',
               fontFamily: 'Anton, sans-serif',
-              fontSize: 'clamp(4rem, 7vw, 7.5rem)',
+              fontSize: 'clamp(4rem, 9vw, 9rem)',
               fontWeight: 900,
-              letterSpacing: '0.22em',
               textTransform: 'uppercase',
-              color: 'rgba(0, 0, 0, 0.065)',
+              color: 'rgba(0, 0, 0, 0.055)',
               userSelect: 'none',
               pointerEvents: 'none',
               zIndex: 0,
@@ -88,7 +90,7 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
               transition: 'transform 700ms cubic-bezier(0.76, 0, 0.24, 1)',
             }}
           >
-            WORKS
+            {'WORKS'.split('').map((ch, i) => <span key={i}>{ch}</span>)}
           </div>
 
           {/* Center-line indicator */}

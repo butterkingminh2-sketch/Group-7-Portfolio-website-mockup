@@ -10,40 +10,69 @@ export interface HeroCarouselProps {
   members: TeamMember[];
 }
 
+const AUTOPLAY_MS = 5000;
+const DEFAULT_BG  = '#0a1c12';
+
 export function HeroCarousel({ members }: HeroCarouselProps) {
   const { currentIndex, goNext, goPrev, goTo } = useCarouselState(members.length);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const dragStart = useRef<number | null>(null);
-  const prevIndex = useRef(currentIndex);
+  const trackRef    = useRef<HTMLDivElement>(null);
+  const sectionRef  = useRef<HTMLElement>(null);
+  const dragStart   = useRef<number | null>(null);
+  const prevIndex   = useRef(currentIndex);
+  const isPaused    = useRef(false);
+  const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const DRAG_THRESHOLD = 50;
 
-  // Keyboard navigation
+  // ── Autoplay ──────────────────────────────────────────────
+  const startAutoplay = useCallback(() => {
+    if (autoplayRef.current) clearInterval(autoplayRef.current);
+    autoplayRef.current = setInterval(() => {
+      if (!isPaused.current) goNext();
+    }, AUTOPLAY_MS);
+  }, [goNext]);
+
+  useEffect(() => {
+    startAutoplay();
+    return () => {
+      if (autoplayRef.current) clearInterval(autoplayRef.current);
+    };
+  }, [startAutoplay]);
+
+  // ── Keyboard navigation ────────────────────────────────────
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') goNext();
-      if (e.key === 'ArrowLeft') goPrev();
+      if (e.key === 'ArrowRight') { goNext(); startAutoplay(); }
+      if (e.key === 'ArrowLeft')  { goPrev(); startAutoplay(); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [goNext, goPrev]);
+  }, [goNext, goPrev, startAutoplay]);
 
-  // Parallax on index change
+  // ── Background colour transition ───────────────────────────
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    sectionRef.current.style.background =
+      members[currentIndex]?.hero_bg ?? DEFAULT_BG;
+  }, [currentIndex, members]);
+
+  // ── Parallax on index change ───────────────────────────────
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const slides = trackRef.current?.querySelectorAll<HTMLElement>('[data-slide]');
     slides?.forEach((slide, i) => {
       const cutoutWrap = slide.querySelector<HTMLElement>('[data-cutout]');
-      const watermark = slide.querySelector<HTMLElement>('[data-watermark]');
+      const watermark  = slide.querySelector<HTMLElement>('[data-watermark]');
       if (!cutoutWrap || !watermark) return;
       const delta = (i - currentIndex) * 60;
       cutoutWrap.style.transform = `translateX(${delta * 0.8}px)`;
-      watermark.style.transform = `translateX(${delta}px)`;
+      watermark.style.transform  = `translateX(${delta}px)`;
     });
     prevIndex.current = currentIndex;
   }, [currentIndex]);
 
-  // Pointer drag (desktop) + touch swipe (mobile)
+  // ── Pointer drag (desktop) + touch swipe (mobile) ─────────
   const onPointerDown = useCallback((e: React.PointerEvent) => {
+    isPaused.current = true;
     dragStart.current = e.clientX;
     trackRef.current?.setPointerCapture(e.pointerId);
   }, []);
@@ -56,17 +85,26 @@ export function HeroCarousel({ members }: HeroCarouselProps) {
         delta < 0 ? goNext() : goPrev();
       }
       dragStart.current = null;
+      isPaused.current = false;
+      startAutoplay();
     },
-    [goNext, goPrev]
+    [goNext, goPrev, startAutoplay]
   );
 
   if (members.length === 0) return null;
 
+  const bgColor = members[currentIndex]?.hero_bg ?? DEFAULT_BG;
+
   return (
     <section
+      ref={sectionRef}
       id="team"
       className="relative w-full overflow-hidden"
-      style={{ height: '100svh', background: '#0a1c12' }}
+      style={{
+        height: '100svh',
+        background: bgColor,
+        transition: 'background 700ms cubic-bezier(0.76, 0, 0.24, 1)',
+      }}
       aria-label="Team members carousel"
       aria-roledescription="carousel"
     >
@@ -88,12 +126,12 @@ export function HeroCarousel({ members }: HeroCarouselProps) {
         <CarouselIndicator
           total={members.length}
           current={currentIndex}
-          onDotClick={goTo}
+          onDotClick={(i) => { goTo(i); startAutoplay(); }}
         />
 
         <div className="flex items-center gap-3">
           <button
-            onClick={goPrev}
+            onClick={() => { goPrev(); startAutoplay(); }}
             aria-label="Previous team member"
             className="rounded-full border border-border-subtle text-text-muted hover:border-border-hover hover:text-text-primary transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:outline-none"
             style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -101,7 +139,7 @@ export function HeroCarousel({ members }: HeroCarouselProps) {
             ←
           </button>
           <button
-            onClick={goNext}
+            onClick={() => { goNext(); startAutoplay(); }}
             aria-label="Next team member"
             className="rounded-full border border-border-subtle text-text-muted hover:border-border-hover hover:text-text-primary transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:outline-none"
             style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}

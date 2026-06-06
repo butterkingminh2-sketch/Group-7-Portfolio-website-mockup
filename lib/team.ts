@@ -15,6 +15,8 @@ export function parseTeamMember(slug: string, fileContent: string): TeamMember {
     role: data.role as string,
     avatar: data.avatar as string,
     avatar_alt: data.avatar_alt as string,
+    avatar_top: (data.avatar_top as string | undefined) ?? undefined,
+    hero_bg: (data.hero_bg as string | undefined) ?? undefined,
     linkedin: (data.linkedin as string) || '',
     github: (data.github as string) || '',
     skills: (data.skills as string[]) || [],

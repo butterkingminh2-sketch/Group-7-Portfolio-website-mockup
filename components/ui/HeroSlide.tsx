@@ -22,7 +22,7 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
       <div
         data-watermark="true"
         className="absolute inset-0 flex items-start justify-center overflow-hidden select-none"
-        style={{ zIndex: 0, paddingTop: '6vh' }}
+        style={{ zIndex: 0, paddingTop: '22vh' }}
         aria-hidden="true"
       >
         <span
@@ -100,20 +100,20 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
         }}
       >
         <p
-          className="font-body text-text-muted mb-1 uppercase"
-          style={{ fontSize: '0.875rem', letterSpacing: '0.04em' }}
+          className="font-body text-text-muted mb-2 uppercase"
+          style={{ fontSize: '1.05rem', letterSpacing: '0.08em' }}
         >
           {member.role}
         </p>
         <h2
           className="font-heading text-text-primary"
-          style={{ fontSize: 'clamp(1.25rem, 2.5vw, 2rem)', fontWeight: 600, lineHeight: 1.3 }}
+          style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 700, lineHeight: 1.1 }}
         >
           {member.name}
         </h2>
         <p
-          className="text-text-muted mt-2 max-w-sm"
-          style={{ fontSize: 'clamp(0.9375rem, 1.5vw, 1.0625rem)', lineHeight: 1.65 }}
+          className="text-text-muted mt-3 max-w-sm"
+          style={{ fontSize: 'clamp(1rem, 1.6vw, 1.2rem)', lineHeight: 1.7 }}
         >
           {member.bio_short}
         </p>

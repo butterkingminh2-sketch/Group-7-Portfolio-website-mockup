@@ -1,8 +1,9 @@
 ---
 name: "Duy Dao"
-display_name_bg: "DAO"
+display_name_bg: "DUY"
 role: "Brand Strategist"
 avatar: "/team/Duy Dao.png"
+hero_bg: "#160d1c"
 avatar_alt: "Duy Dao standing against a transparent background, dressed in a casual shirt with a confident expression."
 linkedin: "https://www.linkedin.com/in/duydao/"
 github: ""
