@@ -1,0 +1,7 @@
+{
+  "extends": ["next/core-web-vitals"],
+  "rules": {
+    "no-console": "warn",
+    "import/no-default-export": "off"
+  }
+}
