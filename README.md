@@ -140,20 +140,17 @@ See the required cleanup pattern in [`.claude/rules/code-style.md`](.claude/rule
 
 ## Team
 
-| # | Name | Role |
-|---|------|------|
-| 1 | TBD | TBD |
-| 2 | TBD | TBD |
-| 3 | TBD | TBD |
-| 4 | TBD | TBD |
-| 5 | TBD | TBD |
-| 6 | TBD | TBD |
-| 7 | TBD | TBD |
-| 8 | TBD | TBD |
-| 9 | TBD | TBD |
-| 10 | TBD | TBD |
-| 11 | TBD | TBD |
-| 12 | TBD | TBD |
+#,Name,Role
+1,Giàng Lê Quang Tùng,MET5
+2,Đào Ngọc Anh Duy,MET5
+3,Nguyễn Quang Minh,MET5
+4,Phạm Việt Anh,MET5
+5,Hà Văn Thái Bảo,MAC4
+6,Đỗ Mỹ Ngọc,MAC4
+7,Nguyễn Bảo Châu,MAC4
+8,Trương Minh Ngọc,MAC4
+9,Nguyễn Thanh Hà,MAC4
+10,Nguyễn Thanh Hiền,MAC4
 
 ---
 
