@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { CrosshairCursor } from '@/components/cursor/CrosshairCursor';
+import { GrainBackground } from '@/components/ui/GrainBackground';
 import { LenisProvider } from '@/components/providers/LenisProvider';
 import { ScrollSnapManager } from '@/components/providers/ScrollSnapManager';
 import { NavBar } from '@/components/ui/NavBar';
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-bg-deep text-text-primary font-body antialiased">
         <LenisProvider>
           <ScrollSnapManager />
+          <GrainBackground />
           <CrosshairCursor />
           <NavBar />
           <main>{children}</main>

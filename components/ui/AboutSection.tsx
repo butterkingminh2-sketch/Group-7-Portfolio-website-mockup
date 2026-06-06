@@ -137,10 +137,14 @@ export function AboutSection() {
           position: 'relative',
         }}
       >
-        {/* Giant display type — neon flicker via ref */}
+        {/* Giant display type — persistent glow + JS flicker via ref */}
         <div
           ref={displayRef}
-          style={{ position: 'relative', userSelect: 'none' }}
+          style={{
+            position: 'relative',
+            userSelect: 'none',
+            textShadow: '0 0 10px #f4a27a, 0 0 40px rgba(244,162,122,0.55), 0 0 100px rgba(244,162,122,0.2)',
+          }}
           aria-hidden="true"
         >
           <div

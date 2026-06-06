@@ -66,7 +66,7 @@ export function HeroCarousel({ members }: HeroCarouselProps) {
     <section
       id="team"
       className="relative w-full overflow-hidden"
-      style={{ height: '100svh' }}
+      style={{ height: '100svh', background: '#0a1c12' }}
       aria-label="Team members carousel"
       aria-roledescription="carousel"
     >

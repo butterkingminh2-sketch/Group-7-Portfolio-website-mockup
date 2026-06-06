@@ -56,12 +56,12 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
       id="work"
       style={{ height: `${(items.length + 1) * 100}vh`, background: '#f8f8f8' }}
     >
-      <div className="sticky top-0 flex overflow-hidden" style={{ height: '100vh' }}>
+      <div className="sticky top-0 flex overflow-hidden" style={{ height: '100vh', background: '#f8f8f8' }}>
 
         {/* ── Left: vertical scroll carousel ── */}
         <div
-          className="relative flex items-center justify-center overflow-hidden"
-          style={{ width: '50%' }}
+          className="relative overflow-hidden"
+          style={{ width: '50%', height: '100vh', background: '#f8f8f8' }}
         >
           {/* "Works" label */}
           <p
@@ -92,10 +92,11 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
             }}
           />
 
-          {/* Item track — centered in left panel via left:50% + translateX(-50%) */}
+          {/* Item track — anchored to top:0 so translateY(50vh) reliably centers */}
           <div
             style={{
               position: 'absolute',
+              top: 0,
               left: '50%',
               width: '320px',
               transform: `translateX(-50%) translateY(calc(50vh - ${CARD_HEIGHT / 2}px - ${activeIndex * STEP}px))`,
@@ -245,6 +246,7 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
         <div
           style={{
             width: '50%',
+            height: '100vh',
             borderLeft: '1px solid #e8e8e8',
             display: 'flex',
             flexDirection: 'column',

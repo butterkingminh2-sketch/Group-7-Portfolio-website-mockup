@@ -6,6 +6,7 @@ import { useLenis } from '@/components/providers/LenisProvider';
 export function ScrollSnapManager() {
   const lenis = useLenis();
   const isSnapping = useRef(false);
+  const userHasScrolled = useRef(false);
   const cleanupRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
@@ -55,7 +56,10 @@ export function ScrollSnapManager() {
 
       let delayedCall: ReturnType<typeof gsap.delayedCall> | null = null;
 
-      const onScroll = () => {
+      const onScroll = ({ velocity }: { velocity: number }) => {
+        // Skip Lenis's synthetic init scroll (velocity === 0, no real user input yet)
+        if (!userHasScrolled.current && Math.abs(velocity) < 0.1) return;
+        userHasScrolled.current = true;
         delayedCall?.kill();
         delayedCall = gsap.delayedCall(0.18, trySnap);
       };

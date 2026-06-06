@@ -46,20 +46,41 @@ body {
   background-color: var(--color-bg);
 }
 
-/* ─── Noise Overlay (animated film grain) ────────── */
-/* mix-blend-mode: screen lightens dark bg noticeably while barely affecting near-white text */
-body::after {
-  content: '';
+
+/* ─── Animated Grain Overlay ─────────────────────── */
+.grain-overlay {
   position: fixed;
-  inset: 0;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200vh;
+  background: transparent url('/team/1k_Dissolve_Noise_Texture.png') repeat 0 0;
+  animation: grain-animation 0.2s infinite;
+  opacity: 0.08;
   pointer-events: none;
-  z-index: 9998;
-  opacity: 0.07;
-  mix-blend-mode: screen;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  animation: noise-shift 0.14s steps(4) infinite;
+  z-index: 1000;
 }
+
+@keyframes grain-animation {
+  0%   { transform: translate(  0%,   0%); }
+  10%  { transform: translate( -5%,  -5%); }
+  20%  { transform: translate(-10%,   5%); }
+  30%  { transform: translate(  5%, -10%); }
+  40%  { transform: translate( -5%,  15%); }
+  50%  { transform: translate(-10%,   5%); }
+  60%  { transform: translate( 15%,   0%); }
+  70%  { transform: translate(  0%,  10%); }
+  80%  { transform: translate(-15%,   0%); }
+  90%  { transform: translate( 10%,   5%); }
+  100% { transform: translate(  5%,   0%); }
+}
+
+/* prefers-reduced-motion gate removed for testing — restore after confirming animation works */
+/* @media (prefers-reduced-motion: reduce) {
+  .grain-overlay { animation: none; }
+} */
 
 /* ─── Crosshair Cursor Base ──────────────────────── */
 .cursor-h,
@@ -104,10 +125,6 @@ body::after {
     display: none;
   }
 
-  body::after {
-    animation: none;
-  }
-
   .motion-fade {
     animation: fade-in 400ms ease forwards;
   }
@@ -119,15 +136,6 @@ body::after {
   to   { opacity: 1; }
 }
 
-/* Film-grain: pixel values give precise tile-offset jumps across the 200px noise tile */
-@keyframes noise-shift {
-  0%   { background-position:   0px   0px; }
-  20%  { background-position: -46px -22px; }
-  40%  { background-position:  34px -58px; }
-  60%  { background-position: -70px  30px; }
-  80%  { background-position:  24px -42px; }
-  100% { background-position:   0px   0px; }
-}
 
 /* Hero slide-up reveal (watermark + cutout) */
 @keyframes slide-up {
