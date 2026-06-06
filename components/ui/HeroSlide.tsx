@@ -18,17 +18,17 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
       }}
       aria-hidden={!isActive}
     >
-      {/* Watermark — slide-up on every activation */}
+      {/* Watermark — larger, anchored above the member's head */}
       <div
         data-watermark="true"
-        className="absolute inset-0 flex items-center justify-center overflow-hidden select-none"
-        style={{ zIndex: 0 }}
+        className="absolute inset-0 flex items-start justify-center overflow-hidden select-none"
+        style={{ zIndex: 0, paddingTop: '6vh' }}
         aria-hidden="true"
       >
         <span
           className="font-display uppercase leading-none"
           style={{
-            fontSize: 'clamp(5rem, 18vw, 16rem)',
+            fontSize: 'clamp(8rem, 26vw, 26rem)',
             letterSpacing: '-0.02em',
             lineHeight: 0.9,
             color: 'var(--color-text-ghost)',
@@ -36,11 +36,9 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
             textShadow: isActive
               ? '0 0 120px rgba(244,162,122,0.14), 0 0 260px rgba(177,151,252,0.09)'
               : 'none',
-            // CSS animation replays each time isActive flips to true
             animation: isActive
               ? 'slide-up 900ms cubic-bezier(0.76, 0, 0.24, 1) forwards'
               : 'none',
-            // Reset to off-screen when inactive so animation starts from correct position
             transform: isActive ? undefined : 'translateY(50px)',
             opacity: isActive ? undefined : 0,
           }}
@@ -49,33 +47,43 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
         </span>
       </div>
 
-      {/* PNG Cutout — slide-up with 80ms delay */}
+      {/* PNG Cutout — face centred at ~50vh */}
       <div
         data-cutout="true"
-        className="absolute inset-0 flex items-end justify-center"
+        className="absolute inset-0"
         style={{ zIndex: 1 }}
       >
+        {/* Positioning wrapper: image top at 33vh → face (~22% down portrait) lands at ~50vh */}
         <div
           style={{
-            filter: isActive
-              ? 'drop-shadow(0 32px 64px rgba(0,0,0,0.6)) drop-shadow(0 0 60px rgba(244,162,122,0.13))'
-              : 'drop-shadow(0 32px 64px rgba(0,0,0,0.6))',
-            transition: 'filter 800ms ease',
-            animation: isActive
-              ? 'slide-up 900ms cubic-bezier(0.76, 0, 0.24, 1) 80ms forwards'
-              : 'none',
-            transform: isActive ? undefined : 'translateY(70px)',
-            opacity: isActive ? undefined : 0,
+            position: 'absolute',
+            top: '33vh',
+            left: '50%',
+            transform: 'translateX(-50%)',
           }}
         >
-          <Image
-            src={member.avatar}
-            alt={member.avatar_alt}
-            width={480}
-            height={640}
-            loading="lazy"
-            className="object-contain max-h-[75vh] w-auto"
-          />
+          <div
+            style={{
+              filter: isActive
+                ? 'drop-shadow(0 32px 64px rgba(0,0,0,0.6)) drop-shadow(0 0 60px rgba(244,162,122,0.13))'
+                : 'drop-shadow(0 32px 64px rgba(0,0,0,0.6))',
+              transition: 'filter 800ms ease',
+              animation: isActive
+                ? 'slide-up 900ms cubic-bezier(0.76, 0, 0.24, 1) 80ms forwards'
+                : 'none',
+              transform: isActive ? undefined : 'translateY(70px)',
+              opacity: isActive ? undefined : 0,
+            }}
+          >
+            <Image
+              src={member.avatar}
+              alt={member.avatar_alt}
+              width={480}
+              height={640}
+              loading="lazy"
+              className="object-contain max-h-[75vh] w-auto"
+            />
+          </div>
         </div>
       </div>
 

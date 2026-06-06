@@ -13,8 +13,9 @@ export interface ProjectsScrollSectionProps {
   members: TeamMember[];
 }
 
-const CARD_HEIGHT = 240;
-const GAP = 24;
+const CARD_WIDTH  = 480;
+const CARD_HEIGHT = 270; // 16:9
+const GAP = 28;
 const STEP = CARD_HEIGHT + GAP;
 
 export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
@@ -23,6 +24,7 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
   );
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const scrollProgress = items.length > 1 ? activeIndex / (items.length - 1) : 0;
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -63,21 +65,31 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
           className="relative overflow-hidden"
           style={{ width: '50%', height: '100vh', background: '#f8f8f8' }}
         >
-          {/* "Works" label */}
-          <p
+          {/* "WORKS" watermark — horizontal, follows scroll top→bottom */}
+          <div
             aria-hidden="true"
             style={{
               position: 'absolute',
-              top: 'clamp(1.5rem, 4vh, 3rem)',
-              left: 'clamp(1.25rem, 5vw, 4rem)',
-              fontSize: '0.7rem',
-              letterSpacing: '0.12em',
+              left: 0,
+              right: 0,
+              top: 0,
+              textAlign: 'center',
+              fontFamily: 'Anton, sans-serif',
+              fontSize: 'clamp(4rem, 7vw, 7.5rem)',
+              fontWeight: 900,
+              letterSpacing: '0.22em',
               textTransform: 'uppercase',
-              color: '#aaa',
+              color: 'rgba(0, 0, 0, 0.065)',
+              userSelect: 'none',
+              pointerEvents: 'none',
+              zIndex: 0,
+              lineHeight: 1,
+              transform: `translateY(calc(${6 + scrollProgress * 74}vh))`,
+              transition: 'transform 700ms cubic-bezier(0.76, 0, 0.24, 1)',
             }}
           >
-            Works
-          </p>
+            WORKS
+          </div>
 
           {/* Center-line indicator */}
           <div
@@ -98,7 +110,7 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
               position: 'absolute',
               top: 0,
               left: '50%',
-              width: '320px',
+              width: `${CARD_WIDTH}px`,
               transform: `translateX(-50%) translateY(calc(50vh - ${CARD_HEIGHT / 2}px - ${activeIndex * STEP}px))`,
               transition: 'transform 700ms cubic-bezier(0.76, 0, 0.24, 1)',
               display: 'flex',
@@ -247,15 +259,19 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
           style={{
             width: '50%',
             height: '100vh',
-            borderLeft: '1px solid #e8e8e8',
+            borderLeft: '1px solid rgba(177,151,252,0.2)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
             position: 'relative',
             overflow: 'hidden',
+            background: 'linear-gradient(180deg, #0a0818 0%, #160e38 20%, #2a1860 45%, #3d2278 70%, #b197fc 130%)',
           }}
         >
-          {/* Three.js 3D background — mouse-interactive metallic form */}
+          {/* Animated aurora / cloud layer */}
+          <div className="sky-cloud-layer" aria-hidden="true" />
+
+          {/* Three.js 3D background — mouse-interactive metallic form with cutout drop-shadow */}
           <ThreeDBackground />
 
           {/* Text content — above canvas */}
@@ -267,25 +283,25 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
             }}
           >
             <div key={activeIndex} style={{ animation: 'fade-in 400ms ease' }}>
-              <p style={{ fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#bbb', marginBottom: '1.5rem' }}>
+              <p style={{ fontSize: '0.8rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(177,151,252,0.75)', marginBottom: '1.5rem' }}>
                 {String(activeIndex + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
               </p>
 
-              <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontStyle: 'italic', fontSize: 'clamp(1.75rem, 3vw, 2.75rem)', fontWeight: 600, lineHeight: 1.1, color: '#111', marginBottom: '1.25rem' }}>
+              <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontStyle: 'italic', fontSize: 'clamp(2rem, 3.5vw, 3.25rem)', fontWeight: 600, lineHeight: 1.1, color: 'var(--primitive-cream)', marginBottom: '1.25rem' }}>
                 {active.project.title}
               </h2>
 
-              <p style={{ fontSize: '0.8rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#999', marginBottom: '1.25rem' }}>
+              <p style={{ fontSize: '1rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(250,250,249,0.6)', marginBottom: '1.25rem' }}>
                 {active.memberName} — {active.project.role}
               </p>
 
-              <p style={{ fontSize: 'clamp(0.875rem, 1.2vw, 1rem)', lineHeight: 1.8, color: '#555', maxWidth: '420px' }}>
+              <p style={{ fontSize: 'clamp(1rem, 1.5vw, 1.2rem)', lineHeight: 1.8, color: 'rgba(250,250,249,0.82)', maxWidth: '420px' }}>
                 {active.project.description}
               </p>
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '1.75rem' }}>
                 {active.project.tags.map((tag) => (
-                  <span key={tag} style={{ padding: '4px 14px', border: '1px solid #e0e0e0', fontSize: '0.65rem', color: '#777', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                  <span key={tag} style={{ padding: '5px 16px', border: '1px solid rgba(177,151,252,0.35)', fontSize: '0.75rem', color: 'rgba(250,250,249,0.75)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                     {tag}
                   </span>
                 ))}

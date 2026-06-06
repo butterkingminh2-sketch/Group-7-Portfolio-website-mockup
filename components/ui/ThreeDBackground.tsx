@@ -116,8 +116,8 @@ export function ThreeDBackground() {
         inset: 0,
         width: '100%',
         height: '100%',
-        opacity: 0.72,
         pointerEvents: 'none',
+        filter: 'drop-shadow(0 28px 56px rgba(0,0,0,0.7))',
       }}
     />
   );

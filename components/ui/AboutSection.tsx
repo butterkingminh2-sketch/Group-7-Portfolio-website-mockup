@@ -6,10 +6,10 @@ const ABOUT_BODY =
   'Studio 7 is a group of seven business administration students at HSB University. Our shared space for project work, research, and professional growth — where data meets design.';
 
 export function AboutSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const displayRef = useRef<HTMLDivElement>(null);
-  const bodyRef = useRef<HTMLParagraphElement>(null);
-  const triggers = useRef<import('gsap/ScrollTrigger').ScrollTrigger[]>([]);
+  const sectionRef  = useRef<HTMLElement>(null);
+  const displayRef  = useRef<HTMLDivElement>(null);
+  const headingRef  = useRef<HTMLHeadingElement>(null);
+  const triggers    = useRef<import('gsap/ScrollTrigger').ScrollTrigger[]>([]);
 
   // Snap is now handled globally by ScrollSnapManager — no local observer needed.
 
@@ -27,17 +27,6 @@ export function AboutSection() {
       if (!sectionRef.current) return;
 
       ctx = gsap.context(() => {
-        // Pin the section for a noticeable scroll-lock
-        const pinSt = ScrollTrigger.create({
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: '+=500',
-          pin: true,
-          pinSpacing: true,
-          anticipatePin: 1,
-        });
-        triggers.current.push(pinSt);
-
         // Neon flicker: fire as soon as section enters viewport from below
         const displayEl = displayRef.current;
         if (displayEl) {
@@ -50,29 +39,29 @@ export function AboutSection() {
           triggers.current.push(flickerSt);
         }
 
-        // Typewriter: starts the moment the section enters viewport from below
-        const bodyEl = bodyRef.current;
-        if (bodyEl) {
-          const chars = Array.from(ABOUT_BODY);
-          bodyEl.textContent = '';
-          chars.forEach((ch) => {
+        // Typewriter: "We combine..." heading only — slow, character by character
+        const headingEl = headingRef.current;
+        if (headingEl) {
+          const text = headingEl.textContent ?? '';
+          headingEl.textContent = '';
+          const headingSpans: HTMLSpanElement[] = [];
+          Array.from(text).forEach((ch) => {
             const span = document.createElement('span');
             span.textContent = ch;
             span.style.opacity = '0';
-            bodyEl.appendChild(span);
+            headingEl.appendChild(span);
+            headingSpans.push(span);
           });
-
-          const spanEls = bodyEl.querySelectorAll<HTMLSpanElement>('span');
 
           const typeSt = ScrollTrigger.create({
             trigger: sectionRef.current,
-            start: 'top bottom',
+            start: 'top top',
             once: true,
             onEnter: () => {
-              gsap.to(spanEls, {
+              gsap.to(headingSpans, {
                 opacity: 1,
-                duration: 0.04,
-                stagger: { amount: 3, from: 'start' },
+                duration: 0.05,
+                stagger: { amount: 4.5, from: 'start' },
                 ease: 'none',
               });
             },
@@ -172,7 +161,7 @@ export function AboutSection() {
               fontStyle: 'italic',
               fontSize: 'clamp(1.1rem, 2.5vw, 2.5rem)',
               fontWeight: 700,
-              color: 'var(--color-accent-start)',
+              color: 'var(--color-accent-end)',
               lineHeight: 1.2,
               pointerEvents: 'none',
               whiteSpace: 'nowrap',
@@ -237,8 +226,9 @@ export function AboutSection() {
           <span style={{ fontSize: '0.45rem' }}>▶</span>
         </p>
 
-        {/* Italic heading */}
+        {/* Italic heading — typewriter via headingRef */}
         <h2
+          ref={headingRef}
           style={{
             fontFamily: '"Playfair Display", Georgia, serif',
             fontStyle: 'italic',
@@ -252,9 +242,8 @@ export function AboutSection() {
           We combine analytical rigour with creative communication to craft work that resonates.
         </h2>
 
-        {/* Typewriter body text */}
+        {/* Body text */}
         <p
-          ref={bodyRef}
           style={{
             fontSize: 'clamp(0.875rem, 1.2vw, 1rem)',
             lineHeight: 1.8,
