@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useLenis } from '@/components/providers/LenisProvider';
 
 const ABOUT_BODY =
   'Studio 7 is a group of seven business administration students at HSB University. Our shared space for project work, research, and professional growth — where data meets design.';
@@ -11,30 +10,8 @@ export function AboutSection() {
   const displayRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLParagraphElement>(null);
   const triggers = useRef<import('gsap/ScrollTrigger').ScrollTrigger[]>([]);
-  const lenis = useLenis();
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    // Scroll-snap into view when 45 % visible and Lenis is ready
-    if (!lenis) return;
-    let hasSnapped = false;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && entry.intersectionRatio > 0.45 && !hasSnapped) {
-          hasSnapped = true;
-          lenis.scrollTo(section, { offset: 0, duration: 1.2 });
-        }
-        if (!entry.isIntersecting) hasSnapped = false;
-      },
-      { threshold: 0.45 }
-    );
-    observer.observe(section);
-
-    return () => observer.disconnect();
-  }, [lenis]);
+  // Snap is now handled globally by ScrollSnapManager — no local observer needed.
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -61,19 +38,19 @@ export function AboutSection() {
         });
         triggers.current.push(pinSt);
 
-        // Neon flicker on display text on enter
+        // Neon flicker: fire as soon as section enters viewport from below
         const displayEl = displayRef.current;
         if (displayEl) {
           const flickerSt = ScrollTrigger.create({
             trigger: sectionRef.current,
-            start: 'top 80%',
+            start: 'top bottom',
             onEnter: () => displayEl.classList.add('neon-flicker'),
             onLeaveBack: () => displayEl.classList.remove('neon-flicker'),
           });
           triggers.current.push(flickerSt);
         }
 
-        // Typewriter on body text
+        // Typewriter: starts the moment the section enters viewport from below
         const bodyEl = bodyRef.current;
         if (bodyEl) {
           const chars = Array.from(ABOUT_BODY);
@@ -89,19 +66,22 @@ export function AboutSection() {
 
           const typeSt = ScrollTrigger.create({
             trigger: sectionRef.current,
-            start: 'top 70%',
+            start: 'top bottom',
             once: true,
             onEnter: () => {
               gsap.to(spanEls, {
                 opacity: 1,
-                duration: 0.001,
-                stagger: { amount: 2.5, from: 'start' },
+                duration: 0.04,
+                stagger: { amount: 3, from: 'start' },
                 ease: 'none',
               });
             },
           });
           triggers.current.push(typeSt);
         }
+
+        // Refresh after setup so triggers see correct positions after Lenis layout
+        gsap.delayedCall(0.1, () => ScrollTrigger.refresh());
       }, sectionRef);
     })();
 

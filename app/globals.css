@@ -47,17 +47,18 @@ body {
 }
 
 /* ─── Noise Overlay (animated film grain) ────────── */
+/* mix-blend-mode: screen lightens dark bg noticeably while barely affecting near-white text */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 9998;
-  opacity: 0.045;
-  mix-blend-mode: overlay;
+  opacity: 0.07;
+  mix-blend-mode: screen;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
   background-size: 200px 200px;
-  animation: noise-shift 0.18s steps(2) infinite;
+  animation: noise-shift 0.14s steps(4) infinite;
 }
 
 /* ─── Crosshair Cursor Base ──────────────────────── */
@@ -118,13 +119,14 @@ body::after {
   to   { opacity: 1; }
 }
 
-/* Film-grain shift: steps(2) keeps the staccato flicker look */
+/* Film-grain: pixel values give precise tile-offset jumps across the 200px noise tile */
 @keyframes noise-shift {
-  0%   { background-position:   0%   0%; }
-  25%  { background-position: -12%  -8%; }
-  50%  { background-position:   6% -15%; }
-  75%  { background-position: -18%   6%; }
-  100% { background-position:   0%   0%; }
+  0%   { background-position:   0px   0px; }
+  20%  { background-position: -46px -22px; }
+  40%  { background-position:  34px -58px; }
+  60%  { background-position: -70px  30px; }
+  80%  { background-position:  24px -42px; }
+  100% { background-position:   0px   0px; }
 }
 
 /* Hero slide-up reveal (watermark + cutout) */
@@ -141,27 +143,28 @@ body::after {
 
 /* Page 3 neon flicker for display text */
 @keyframes neon-flicker {
-  0%, 17%, 21%, 49%, 53%, 57%, 100% {
+  0%, 15%, 20%, 48%, 52%, 58%, 100% {
     opacity: 1;
     text-shadow:
-      0 0 8px rgba(244, 162, 122, 0.9),
-      0 0 30px rgba(244, 162, 122, 0.5),
-      0 0 80px rgba(244, 162, 122, 0.2);
+      0 0 10px #f4a27a,
+      0 0 40px rgba(244, 162, 122, 0.65),
+      0 0 110px rgba(244, 162, 122, 0.25),
+      0 0 200px rgba(177, 151, 252, 0.12);
   }
-  18%, 50%, 54%, 56% {
-    opacity: 0.72;
+  16%, 49%, 53%, 56% {
+    opacity: 0.28;
     text-shadow: none;
   }
-  20%, 52%, 55% {
-    opacity: 0.95;
+  18%, 51%, 55% {
+    opacity: 0.88;
     text-shadow:
-      0 0 8px rgba(244, 162, 122, 0.7),
-      0 0 30px rgba(244, 162, 122, 0.3);
+      0 0 10px #f4a27a,
+      0 0 35px rgba(244, 162, 122, 0.5);
   }
 }
 
 .neon-flicker {
-  animation: neon-flicker 3.5s ease-in-out infinite;
+  animation: neon-flicker 3.2s ease-in-out infinite;
 }
 
 /* ─── Section Spacing ────────────────────────────── */

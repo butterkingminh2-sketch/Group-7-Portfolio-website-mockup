@@ -6,9 +6,6 @@ export interface HeroSlideProps {
   isActive: boolean;
 }
 
-const SLIDE_EASE = '700ms cubic-bezier(0.76, 0, 0.24, 1)';
-const SLIDE_EASE_SLOW = '900ms cubic-bezier(0.76, 0, 0.24, 1)';
-
 export function HeroSlide({ member, isActive }: HeroSlideProps) {
   return (
     <div
@@ -16,12 +13,12 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
       className="absolute inset-0 flex items-end"
       style={{
         opacity: isActive ? 1 : 0,
-        transition: `opacity ${SLIDE_EASE}`,
+        transition: 'opacity 700ms cubic-bezier(0.76, 0, 0.24, 1)',
         pointerEvents: isActive ? 'auto' : 'none',
       }}
       aria-hidden={!isActive}
     >
-      {/* Watermark — z-index 0, slide-up + glow */}
+      {/* Watermark — slide-up on every activation */}
       <div
         data-watermark="true"
         className="absolute inset-0 flex items-center justify-center overflow-hidden select-none"
@@ -36,31 +33,39 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
             lineHeight: 0.9,
             color: 'var(--color-text-ghost)',
             display: 'block',
-            transform: isActive ? 'translateY(0)' : 'translateY(50px)',
-            transition: `transform ${SLIDE_EASE_SLOW}, text-shadow ${SLIDE_EASE_SLOW}`,
             textShadow: isActive
-              ? '0 0 120px rgba(244,162,122,0.12), 0 0 240px rgba(177,151,252,0.08)'
+              ? '0 0 120px rgba(244,162,122,0.14), 0 0 260px rgba(177,151,252,0.09)'
               : 'none',
+            // CSS animation replays each time isActive flips to true
+            animation: isActive
+              ? 'slide-up 900ms cubic-bezier(0.76, 0, 0.24, 1) forwards'
+              : 'none',
+            // Reset to off-screen when inactive so animation starts from correct position
+            transform: isActive ? undefined : 'translateY(50px)',
+            opacity: isActive ? undefined : 0,
           }}
         >
           {member.display_name_bg}
         </span>
       </div>
 
-      {/* PNG Cutout — z-index 1, slide-up */}
+      {/* PNG Cutout — slide-up with 80ms delay */}
       <div
         data-cutout="true"
         className="absolute inset-0 flex items-end justify-center"
         style={{ zIndex: 1 }}
       >
-        {/* inner wrapper carries the slide-up; outer carries parallax translateX */}
         <div
           style={{
             filter: isActive
-              ? 'drop-shadow(0 32px 64px rgba(0,0,0,0.6)) drop-shadow(0 0 60px rgba(244,162,122,0.12))'
+              ? 'drop-shadow(0 32px 64px rgba(0,0,0,0.6)) drop-shadow(0 0 60px rgba(244,162,122,0.13))'
               : 'drop-shadow(0 32px 64px rgba(0,0,0,0.6))',
-            transform: isActive ? 'translateY(0)' : 'translateY(70px)',
-            transition: `transform ${SLIDE_EASE_SLOW} 80ms, filter ${SLIDE_EASE_SLOW} 80ms`,
+            transition: 'filter 800ms ease',
+            animation: isActive
+              ? 'slide-up 900ms cubic-bezier(0.76, 0, 0.24, 1) 80ms forwards'
+              : 'none',
+            transform: isActive ? undefined : 'translateY(70px)',
+            opacity: isActive ? undefined : 0,
           }}
         >
           <Image
@@ -74,14 +79,16 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
         </div>
       </div>
 
-      {/* Bio Overlay — z-index 2, slide from left */}
+      {/* Bio Overlay — slide from left with 200ms delay */}
       <div
         className="relative w-full px-[clamp(1.25rem,5vw,5rem)] pb-16"
         style={{
           zIndex: 2,
-          transform: isActive ? 'translateX(0)' : 'translateX(-36px)',
-          opacity: isActive ? 1 : 0,
-          transition: `transform ${SLIDE_EASE} 180ms, opacity ${SLIDE_EASE} 180ms`,
+          animation: isActive
+            ? 'slide-from-left 700ms cubic-bezier(0.76, 0, 0.24, 1) 200ms forwards'
+            : 'none',
+          transform: isActive ? undefined : 'translateX(-36px)',
+          opacity: isActive ? undefined : 0,
         }}
       >
         <p
@@ -92,11 +99,7 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
         </p>
         <h2
           className="font-heading text-text-primary"
-          style={{
-            fontSize: 'clamp(1.25rem, 2.5vw, 2rem)',
-            fontWeight: 600,
-            lineHeight: 1.3,
-          }}
+          style={{ fontSize: 'clamp(1.25rem, 2.5vw, 2rem)', fontWeight: 600, lineHeight: 1.3 }}
         >
           {member.name}
         </h2>

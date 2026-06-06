@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { TeamMember } from '@/types/team';
-import { Abstract3DBackground } from '@/components/ui/Abstract3DBackground';
+import { ThreeDBackground } from '@/components/ui/ThreeDBackground';
 
 interface ProjectEntry {
   project: TeamMember['projects'][number];
@@ -92,16 +92,17 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
             }}
           />
 
-          {/* Item track — centered horizontally in the left panel */}
+          {/* Item track — centered in left panel via left:50% + translateX(-50%) */}
           <div
             style={{
               position: 'absolute',
               left: '50%',
-              width: 'clamp(240px, 42%, 360px)',
+              width: '320px',
               transform: `translateX(-50%) translateY(calc(50vh - ${CARD_HEIGHT / 2}px - ${activeIndex * STEP}px))`,
               transition: 'transform 700ms cubic-bezier(0.76, 0, 0.24, 1)',
               display: 'flex',
               flexDirection: 'column',
+              alignItems: 'center',
               gap: `${GAP}px`,
             }}
           >
@@ -252,8 +253,8 @@ export function ProjectsScrollSection({ members }: ProjectsScrollSectionProps) {
             overflow: 'hidden',
           }}
         >
-          {/* Abstract 3D canvas background */}
-          <Abstract3DBackground />
+          {/* Three.js 3D background — mouse-interactive metallic form */}
+          <ThreeDBackground />
 
           {/* Text content — above canvas */}
           <div
