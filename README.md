@@ -2,7 +2,7 @@
 
 > An immersive, scroll-driven group portfolio showcasing business administration projects, data analysis research, and individual capabilities — built with Next.js 14, GSAP, and Lenis.
 
-**Live URL:** Coming soon
+**Live URL:** https://portfolio-website-mockup-9un8.vercel.app
 
 ---
 
