@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,600;1,700&family=DM+Sans:wght@400;500&family=JetBrains+Mono&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ───────────────────────────────── */
+:root {
+  /* Primitives */
+  --primitive-bg-deep:      #0a1c12;
+  --primitive-bg-surface:   #0f2318;
+  --primitive-bg-overlay:   #162d1e;
+  --primitive-cream:        #fafaf9;
+  --primitive-cream-muted:  #a8a89e;
+  --primitive-watermark:    rgba(250, 250, 249, 0.05);
+  --primitive-accent-start: #f4a27a;
+  --primitive-accent-end:   #b197fc;
+  --primitive-accent-mid:   #e879a0;
+  --primitive-border:       rgba(250, 250, 249, 0.08);
+  --primitive-border-hover: rgba(250, 250, 249, 0.18);
+  --primitive-focus:        #7c6af5;
+
+  /* Semantic */
+  --color-bg:             var(--primitive-bg-deep);
+  --color-surface:        var(--primitive-bg-surface);
+  --color-surface-raised: var(--primitive-bg-overlay);
+  --color-text:           var(--primitive-cream);
+  --color-text-muted:     var(--primitive-cream-muted);
+  --color-text-ghost:     var(--primitive-watermark);
+  --color-accent-start:   var(--primitive-accent-start);
+  --color-accent-end:     var(--primitive-accent-end);
+  --color-border:         var(--primitive-border);
+  --color-border-hover:   var(--primitive-border-hover);
+  --color-focus:          var(--primitive-focus);
+}
+
+/* ─── Base ───────────────────────────────────────── */
+html {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+/* ─── Noise Overlay ──────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.055;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ─── Crosshair Cursor Base ──────────────────────── */
+.cursor-h,
+.cursor-v {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  background: var(--primitive-cream);
+  opacity: 0.35;
+  will-change: transform;
+  transition: opacity 150ms ease, height 150ms ease, width 150ms ease;
+}
+
+.cursor-h {
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 1px;
+}
+
+.cursor-v {
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100vh;
+}
+
+.cursor-h.cursor-thick {
+  height: 2px;
+  opacity: 0.7;
+}
+
+.cursor-v.cursor-thick {
+  width: 2px;
+  opacity: 0.7;
+}
+
+/* ─── Reduced Motion Fallback ────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .cursor-h,
+  .cursor-v {
+    display: none;
+  }
+
+  .motion-fade {
+    animation: fade-in 400ms ease forwards;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Section Spacing ────────────────────────────── */
+.section-padding {
+  padding-block: clamp(6rem, 15vh, 12rem);
+  padding-inline: clamp(1.25rem, 5vw, 5rem);
+}
+
+/* ─── Card Grid Perspective ──────────────────────── */
+.card-grid {
+  perspective: 1200px;
+}
+
+.project-card {
+  transform: rotateX(12deg);
+  transform-style: preserve-3d;
+}
