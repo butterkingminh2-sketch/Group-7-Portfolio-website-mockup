@@ -1,6 +1,6 @@
 ---
 name: "Linh Tran"
-display_name_bg: "TRAN"
+display_name_bg: "LINH"
 role: "UX Strategist"
 avatar: "/team/Linh Tran.png"
 hero_bg: "#1c0d16"

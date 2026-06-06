@@ -1,6 +1,6 @@
 ---
 name: "Minh Nguyen"
-display_name_bg: "MINH NGUYEN"
+display_name_bg: "MINH"
 role: "Financial Analyst"
 avatar: "/team/Minh Nguyen.png"
 avatar_top: "0vh"

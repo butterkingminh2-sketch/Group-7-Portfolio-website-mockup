@@ -182,13 +182,13 @@ export function AboutSection() {
           <div
             style={{
               position: 'absolute',
-              top: '38%',
-              left: '22%',
+              top: '32%',
+              left: '20%',
               fontFamily: '"Playfair Display", Georgia, serif',
               fontStyle: 'italic',
-              fontSize: 'clamp(1.1rem, 2.5vw, 2.5rem)',
+              fontSize: 'clamp(1.5rem, 3.5vw, 3.5rem)',
               fontWeight: 700,
-              color: 'var(--color-accent-end)',
+              color: '#7c5cbf',
               lineHeight: 1.2,
               pointerEvents: 'none',
               whiteSpace: 'nowrap',
@@ -202,7 +202,7 @@ export function AboutSection() {
         <div style={{ marginTop: '3.5rem', display: 'flex', gap: '2.5rem' }}>
           {[
             { label: 'Established', value: '2025 — Present' },
-            { label: 'Team Size',   value: '7 Students' },
+            { label: 'Team Size',   value: '10 Students' },
             { label: 'Program',     value: 'Business Admin.' },
           ].map(({ label, value }) => (
             <div

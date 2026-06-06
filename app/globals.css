@@ -111,10 +111,10 @@ body {
 /* Center intersection dot — sits above the lines */
 .cursor-center {
   position: fixed;
-  top: -4px;
-  left: -4px;
-  width: 8px;
-  height: 8px;
+  top: -10px;
+  left: -10px;
+  width: 20px;
+  height: 20px;
   pointer-events: none;
   z-index: 10000;
   will-change: transform;
@@ -130,7 +130,7 @@ body {
 
 /* Horizontal arm of centre cross */
 .cursor-center::before {
-  width: 8px;
+  width: 20px;
   height: 1px;
   top: 50%;
   left: 0;
@@ -140,7 +140,7 @@ body {
 /* Vertical arm of centre cross */
 .cursor-center::after {
   width: 1px;
-  height: 8px;
+  height: 20px;
   left: 50%;
   top: 0;
   margin-left: -0.5px;

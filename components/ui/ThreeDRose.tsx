@@ -109,7 +109,7 @@ export function ThreeDRose() {
       group.add(stamenMesh);
 
       // Position group: shifted left, slightly low so full stem reads in frame
-      group.position.set(-0.7, 0.4, 0);
+      group.position.set(-0.9, 0.4, 0);
 
       scene.add(group);
 

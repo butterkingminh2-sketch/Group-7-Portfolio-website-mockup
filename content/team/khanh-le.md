@@ -1,6 +1,6 @@
 ---
 name: "Khanh Le"
-display_name_bg: "LE"
+display_name_bg: "KHANH LE"
 role: "Business Developer"
 avatar: "/team/Khanh Le.png"
 hero_bg: "#1c1508"
