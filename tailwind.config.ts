@@ -27,7 +27,7 @@ const config: Config = {
         mono:    ['"JetBrains Mono"', 'monospace'],
       },
       maxWidth: {
-        content: '1440px',
+        content: 'min(100%, 88vw)',
       },
     },
   },
