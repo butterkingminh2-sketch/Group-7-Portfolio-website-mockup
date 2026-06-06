@@ -140,17 +140,18 @@ See the required cleanup pattern in [`.claude/rules/code-style.md`](.claude/rule
 
 ## Team
 
-#,Name,Role
-1,Giàng Lê Quang Tùng,MET5
-2,Đào Ngọc Anh Duy,MET5
-3,Nguyễn Quang Minh,MET5
-4,Phạm Việt Anh,MET5
-5,Hà Văn Thái Bảo,MAC4
-6,Đỗ Mỹ Ngọc,MAC4
-7,Nguyễn Bảo Châu,MAC4
-8,Trương Minh Ngọc,MAC4
-9,Nguyễn Thanh Hà,MAC4
-10,Nguyễn Thanh Hiền,MAC4
+| # | Name | Number |
+|---|------|------|
+| 1 | Giàng Lê Quang Tùng | 23080090 |
+| 2 | Đào Ngọc Anh Duy | 23080024 |
+| 3 | Nguyễn Quang Minh | 23080064 |
+| 4 | Phạm Việt Anh | 23080011 |
+| 5 | Hà Văn Thái Bảo | 23080106 |
+| 6 | Đỗ Mỹ Ngọc | 23080153 |
+| 7 | Nguyễn Bảo Châu | 23080111 |
+| 8 | Trương Minh Ngọc | 23080158 |
+| 9 | Nguyễn Thanh Hà | 23080122 |
+| 10 | Nguyễn Thanh Hiền | 23080124 |
 
 ---
 
