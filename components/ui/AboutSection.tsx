@@ -1,10 +1,40 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useLenis } from '@/components/providers/LenisProvider';
+
+const ABOUT_BODY =
+  'Studio 7 is a group of seven business administration students at HSB University. Our shared space for project work, research, and professional growth — where data meets design.';
 
 export function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const displayRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLParagraphElement>(null);
   const triggers = useRef<import('gsap/ScrollTrigger').ScrollTrigger[]>([]);
+  const lenis = useLenis();
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    // Scroll-snap into view when 45 % visible and Lenis is ready
+    if (!lenis) return;
+    let hasSnapped = false;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.45 && !hasSnapped) {
+          hasSnapped = true;
+          lenis.scrollTo(section, { offset: 0, duration: 1.2 });
+        }
+        if (!entry.isIntersecting) hasSnapped = false;
+      },
+      { threshold: 0.45 }
+    );
+    observer.observe(section);
+
+    return () => observer.disconnect();
+  }, [lenis]);
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -20,15 +50,58 @@ export function AboutSection() {
       if (!sectionRef.current) return;
 
       ctx = gsap.context(() => {
-        const st = ScrollTrigger.create({
+        // Pin the section for a noticeable scroll-lock
+        const pinSt = ScrollTrigger.create({
           trigger: sectionRef.current,
           start: 'top top',
-          end: '+=120',
+          end: '+=500',
           pin: true,
           pinSpacing: true,
           anticipatePin: 1,
         });
-        triggers.current.push(st);
+        triggers.current.push(pinSt);
+
+        // Neon flicker on display text on enter
+        const displayEl = displayRef.current;
+        if (displayEl) {
+          const flickerSt = ScrollTrigger.create({
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            onEnter: () => displayEl.classList.add('neon-flicker'),
+            onLeaveBack: () => displayEl.classList.remove('neon-flicker'),
+          });
+          triggers.current.push(flickerSt);
+        }
+
+        // Typewriter on body text
+        const bodyEl = bodyRef.current;
+        if (bodyEl) {
+          const chars = Array.from(ABOUT_BODY);
+          bodyEl.textContent = '';
+          chars.forEach((ch) => {
+            const span = document.createElement('span');
+            span.textContent = ch;
+            span.style.opacity = '0';
+            bodyEl.appendChild(span);
+          });
+
+          const spanEls = bodyEl.querySelectorAll<HTMLSpanElement>('span');
+
+          const typeSt = ScrollTrigger.create({
+            trigger: sectionRef.current,
+            start: 'top 70%',
+            once: true,
+            onEnter: () => {
+              gsap.to(spanEls, {
+                opacity: 1,
+                duration: 0.001,
+                stagger: { amount: 2.5, from: 'start' },
+                ease: 'none',
+              });
+            },
+          });
+          triggers.current.push(typeSt);
+        }
       }, sectionRef);
     })();
 
@@ -84,8 +157,12 @@ export function AboutSection() {
           position: 'relative',
         }}
       >
-        {/* Giant display type */}
-        <div style={{ position: 'relative', userSelect: 'none' }} aria-hidden="true">
+        {/* Giant display type — neon flicker via ref */}
+        <div
+          ref={displayRef}
+          style={{ position: 'relative', userSelect: 'none' }}
+          aria-hidden="true"
+        >
           <div
             style={{
               fontFamily: 'Anton, sans-serif',
@@ -101,7 +178,7 @@ export function AboutSection() {
             <div>SEVEN</div>
           </div>
 
-          {/* Italic overlay */}
+          {/* Italic overlay — also flickers via parent class */}
           <div
             style={{
               position: 'absolute',
@@ -131,30 +208,20 @@ export function AboutSection() {
             gap: '2.5rem',
           }}
         >
-          <div style={{ borderTop: '1px solid rgba(250,250,249,0.18)', paddingTop: '0.875rem' }}>
-            <p style={{ fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--primitive-cream-muted)', marginBottom: '5px' }}>
-              Established
-            </p>
-            <p style={{ fontSize: '0.875rem', color: 'var(--primitive-cream)', fontWeight: 500 }}>
-              2025 — Present
-            </p>
-          </div>
-          <div style={{ borderTop: '1px solid rgba(250,250,249,0.18)', paddingTop: '0.875rem' }}>
-            <p style={{ fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--primitive-cream-muted)', marginBottom: '5px' }}>
-              Team Size
-            </p>
-            <p style={{ fontSize: '0.875rem', color: 'var(--primitive-cream)', fontWeight: 500 }}>
-              7 Students
-            </p>
-          </div>
-          <div style={{ borderTop: '1px solid rgba(250,250,249,0.18)', paddingTop: '0.875rem' }}>
-            <p style={{ fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--primitive-cream-muted)', marginBottom: '5px' }}>
-              Program
-            </p>
-            <p style={{ fontSize: '0.875rem', color: 'var(--primitive-cream)', fontWeight: 500 }}>
-              Business Admin.
-            </p>
-          </div>
+          {[
+            { label: 'Established', value: '2025 — Present' },
+            { label: 'Team Size', value: '7 Students' },
+            { label: 'Program', value: 'Business Admin.' },
+          ].map(({ label, value }) => (
+            <div key={label} style={{ borderTop: '1px solid rgba(250,250,249,0.18)', paddingTop: '0.875rem' }}>
+              <p style={{ fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--primitive-cream-muted)', marginBottom: '5px' }}>
+                {label}
+              </p>
+              <p style={{ fontSize: '0.875rem', color: 'var(--primitive-cream)', fontWeight: 500 }}>
+                {value}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -186,7 +253,7 @@ export function AboutSection() {
           <span style={{ fontSize: '0.45rem' }}>▶</span>
         </p>
 
-        {/* Main heading */}
+        {/* Italic heading */}
         <h2
           style={{
             fontFamily: '"Playfair Display", Georgia, serif',
@@ -201,8 +268,9 @@ export function AboutSection() {
           We combine analytical rigour with creative communication to craft work that resonates.
         </h2>
 
-        {/* Body */}
+        {/* Typewriter body text */}
         <p
+          ref={bodyRef}
           style={{
             fontSize: 'clamp(0.875rem, 1.2vw, 1rem)',
             lineHeight: 1.8,
@@ -210,14 +278,12 @@ export function AboutSection() {
             maxWidth: '400px',
           }}
         >
-          Studio 7 is a group of seven business administration students at HSB University.
-          Our shared space for project work, research, and professional growth — where
-          data meets design.
+          {ABOUT_BODY}
         </p>
 
-        {/* Circular accent button */}
+        {/* Circular button */}
         <button
-          aria-label="My philosophy"
+          aria-label="Studio 7 scroll to explore"
           style={{
             marginTop: '3rem',
             width: '80px',

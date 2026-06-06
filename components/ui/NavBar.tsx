@@ -41,7 +41,15 @@ export function NavBar() {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-[clamp(1.25rem,5vw,5rem)] py-6">
+    <header
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-[clamp(1.25rem,5vw,5rem)] py-6"
+      style={{
+        background: 'rgba(10, 28, 18, 0.72)',
+        backdropFilter: 'blur(16px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+        borderBottom: '1px solid rgba(250, 250, 249, 0.06)',
+      }}
+    >
       <Link
         href="/"
         className="font-display text-text-primary tracking-widest text-sm uppercase"

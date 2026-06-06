@@ -5,6 +5,12 @@ export interface Education {
   year: number;
 }
 
+export interface ProjectMedia {
+  type: 'image' | 'video';
+  src: string;
+  poster?: string;
+}
+
 export interface Project {
   title: string;
   role: string;
@@ -13,6 +19,7 @@ export interface Project {
   tags: string[];
   link: string;
   card_gradient_angle: number;
+  media?: ProjectMedia;
 }
 
 export interface TeamMember {

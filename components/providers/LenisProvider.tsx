@@ -25,14 +25,16 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
     let active = true;
 
     (async () => {
-      const [lenisModule, gsapModule] = await Promise.all([
+      const [lenisModule, gsapModule, { ScrollTrigger }] = await Promise.all([
         import('lenis'),
         import('gsap'),
+        import('gsap/ScrollTrigger'),
       ]);
       if (!active) return;
 
       const LenisClass = lenisModule.default;
       const gsap = gsapModule.default;
+      gsap.registerPlugin(ScrollTrigger);
 
       const instance = new LenisClass({
         duration: 1.2,
@@ -43,6 +45,9 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       const ticker = (time: number) => instance.raf(time * 1000);
       gsap.ticker.add(ticker);
       gsap.ticker.lagSmoothing(0);
+
+      // Sync Lenis scroll position → GSAP ScrollTrigger so pins work correctly
+      instance.on('scroll', () => ScrollTrigger.update());
 
       lenisRef.current = instance;
       gsapRef.current = gsap;

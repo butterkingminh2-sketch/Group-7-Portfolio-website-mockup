@@ -6,6 +6,9 @@ export interface HeroSlideProps {
   isActive: boolean;
 }
 
+const SLIDE_EASE = '700ms cubic-bezier(0.76, 0, 0.24, 1)';
+const SLIDE_EASE_SLOW = '900ms cubic-bezier(0.76, 0, 0.24, 1)';
+
 export function HeroSlide({ member, isActive }: HeroSlideProps) {
   return (
     <div
@@ -13,12 +16,12 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
       className="absolute inset-0 flex items-end"
       style={{
         opacity: isActive ? 1 : 0,
-        transition: 'opacity 700ms cubic-bezier(0.76, 0, 0.24, 1)',
+        transition: `opacity ${SLIDE_EASE}`,
         pointerEvents: isActive ? 'auto' : 'none',
       }}
       aria-hidden={!isActive}
     >
-      {/* Watermark — z-index 0 */}
+      {/* Watermark — z-index 0, slide-up + glow */}
       <div
         data-watermark="true"
         className="absolute inset-0 flex items-center justify-center overflow-hidden select-none"
@@ -26,25 +29,40 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
         aria-hidden="true"
       >
         <span
-          className="font-display text-text-ghost uppercase leading-none"
+          className="font-display uppercase leading-none"
           style={{
             fontSize: 'clamp(5rem, 18vw, 16rem)',
             letterSpacing: '-0.02em',
             lineHeight: 0.9,
             color: 'var(--color-text-ghost)',
+            display: 'block',
+            transform: isActive ? 'translateY(0)' : 'translateY(50px)',
+            transition: `transform ${SLIDE_EASE_SLOW}, text-shadow ${SLIDE_EASE_SLOW}`,
+            textShadow: isActive
+              ? '0 0 120px rgba(244,162,122,0.12), 0 0 240px rgba(177,151,252,0.08)'
+              : 'none',
           }}
         >
           {member.display_name_bg}
         </span>
       </div>
 
-      {/* PNG Cutout — z-index 1 */}
+      {/* PNG Cutout — z-index 1, slide-up */}
       <div
         data-cutout="true"
         className="absolute inset-0 flex items-end justify-center"
         style={{ zIndex: 1 }}
       >
-        <div style={{ filter: 'drop-shadow(0 32px 64px rgba(0,0,0,0.6))' }}>
+        {/* inner wrapper carries the slide-up; outer carries parallax translateX */}
+        <div
+          style={{
+            filter: isActive
+              ? 'drop-shadow(0 32px 64px rgba(0,0,0,0.6)) drop-shadow(0 0 60px rgba(244,162,122,0.12))'
+              : 'drop-shadow(0 32px 64px rgba(0,0,0,0.6))',
+            transform: isActive ? 'translateY(0)' : 'translateY(70px)',
+            transition: `transform ${SLIDE_EASE_SLOW} 80ms, filter ${SLIDE_EASE_SLOW} 80ms`,
+          }}
+        >
           <Image
             src={member.avatar}
             alt={member.avatar_alt}
@@ -56,10 +74,15 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
         </div>
       </div>
 
-      {/* Bio Overlay — z-index 2 */}
+      {/* Bio Overlay — z-index 2, slide from left */}
       <div
         className="relative w-full px-[clamp(1.25rem,5vw,5rem)] pb-16"
-        style={{ zIndex: 2 }}
+        style={{
+          zIndex: 2,
+          transform: isActive ? 'translateX(0)' : 'translateX(-36px)',
+          opacity: isActive ? 1 : 0,
+          transition: `transform ${SLIDE_EASE} 180ms, opacity ${SLIDE_EASE} 180ms`,
+        }}
       >
         <p
           className="font-body text-text-muted mb-1 uppercase"
