@@ -2,7 +2,7 @@
 name: "Minh Nguyen"
 display_name_bg: "MINH"
 role: "Financial Analyst"
-avatar: "/team/Minh Nguyen.png"
+avatar: "/team/Nguyen Quang Minh.png"
 avatar_top: "0vh"
 hero_bg: "#0d1620"
 avatar_alt: "Minh Nguyen standing against a transparent background, wearing a smart casual outfit with a composed expression."

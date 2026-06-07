@@ -3,8 +3,11 @@
 import { useEffect, useRef } from 'react';
 import { ThreeDRose } from '@/components/ui/ThreeDRose';
 
+const HEADING_TEXT  = 'We combine analytical rigour with creative communication to craft work that resonates.';
+const HEADING_BREAK = 'We combine analytical rigour with creative'; // types fast; pauses here
+
 const ABOUT_BODY =
-  'Studio 7 is a group of seven business administration students at HSB University. Our shared space for project work, research, and professional growth — where data meets design.';
+  'Studio 7 is a group of ten business administration students at HSB University. Our shared space for project work, research, and professional growth — where data meets design.';
 
 const BOTTOM_MOTIFS = [
   { type: 'line' },
@@ -21,77 +24,108 @@ export function AboutSection() {
   const displayRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const bodyRef    = useRef<HTMLParagraphElement>(null);
-  const triggers   = useRef<import('gsap/ScrollTrigger').ScrollTrigger[]>([]);
-
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (!sectionRef.current) return;
 
-    let ctx: ReturnType<typeof import('gsap').default.context>;
+    const section   = sectionRef.current;
+    const headingEl = headingRef.current;
+    const bodyEl    = bodyRef.current;
+    const displayEl = displayRef.current;
+    if (!section || !headingEl || !bodyEl) return;
 
-    (async () => {
-      const gsap = (await import('gsap')).default;
-      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
-      gsap.registerPlugin(ScrollTrigger);
+    // Use module-level constants so this is immune to stale textContent on HMR/remount
+    const part1Chars = Array.from(HEADING_TEXT.slice(0, HEADING_BREAK.length));
+    const part2Chars = Array.from(HEADING_TEXT.slice(HEADING_BREAK.length));
+    const bodyChars  = Array.from(ABOUT_BODY);
 
-      if (!sectionRef.current) return;
+    const FAST_DELAY = 0.028; // ~35 chars/sec  (heading part 1)
+    const SLOW_DELAY = 0.052; // ~19 chars/sec  (heading part 2)
+    const BODY_DELAY = 0.018; // ~56 chars/sec  (body paragraph)
+    const PAUSE      = 0.55;  // pause after "creative"
 
-      const bodyEl    = bodyRef.current;
-      const headingEl = headingRef.current;
-      const displayEl = displayRef.current;
+    // Clear both elements — cursor spans take over content management
+    while (headingEl.firstChild) headingEl.removeChild(headingEl.firstChild);
+    while (bodyEl.firstChild)    bodyEl.removeChild(bodyEl.firstChild);
+    bodyEl.style.opacity = '0'; // body hidden until heading finishes
 
-      ctx = gsap.context(() => {
-        if (bodyEl) gsap.set(bodyEl, { opacity: 0, y: 24 });
+    const mkCursor = (parent: HTMLElement) => {
+      const c = document.createElement('span');
+      c.textContent = '_';
+      c.className   = 'typewriter-cursor';
+      c.style.color = 'var(--color-accent-start)';
+      parent.appendChild(c);
+      return c;
+    };
 
-        if (displayEl) {
-          const flickerSt = ScrollTrigger.create({
-            trigger: sectionRef.current,
-            start: 'top bottom',
-            onEnter:     () => displayEl.classList.add('neon-flicker'),
-            onLeaveBack: () => displayEl.classList.remove('neon-flicker'),
-          });
-          triggers.current.push(flickerSt);
-        }
+    const hCursor = mkCursor(headingEl);
+    const bCursor = mkCursor(bodyEl);
 
-        if (headingEl) {
-          const text = headingEl.textContent ?? '';
-          headingEl.textContent = '';
-          const spans: HTMLSpanElement[] = [];
-          Array.from(text).forEach((ch) => {
-            const span = document.createElement('span');
-            span.textContent = ch;
-            span.style.opacity = '0';
-            headingEl.appendChild(span);
-            spans.push(span);
-          });
+    // Neon flicker: add/remove class as section enters/leaves viewport
+    let flickerObserver: IntersectionObserver | null = null;
+    if (displayEl) {
+      flickerObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) displayEl.classList.add('neon-flicker');
+          else displayEl.classList.remove('neon-flicker');
+        },
+        { threshold: 0 },
+      );
+      flickerObserver.observe(section);
+    }
 
-          const typeSt = ScrollTrigger.create({
-            trigger: sectionRef.current,
-            start: 'top top',
-            once: true,
-            onEnter: () => {
-              gsap.to(spans, {
-                opacity: 1,
-                duration: 0.05,
-                stagger: { amount: 4.5, from: 'start' },
-                ease: 'none',
-                onComplete: () => {
-                  if (bodyEl) gsap.to(bodyEl, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' });
-                },
+    // Typewriter: fires once when section is 90%+ visible (fully snapped in)
+    let started = false;
+    const typeObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started) {
+          started = true;
+          typeObserver.disconnect();
+          (async () => {
+            const gsap = (await import('gsap')).default;
+
+            const typeChars = (
+              chars: string[],
+              delay: number,
+              parent: HTMLElement,
+              cur: HTMLElement,
+            ): Promise<void> =>
+              new Promise((resolve) => {
+                let i = 0;
+                const next = () => {
+                  if (i >= chars.length) { resolve(); return; }
+                  const span = document.createElement('span');
+                  span.textContent = chars[i++];
+                  parent.insertBefore(span, cur);
+                  gsap.delayedCall(delay, next);
+                };
+                next();
               });
-            },
-          });
-          triggers.current.push(typeSt);
-        }
 
-        gsap.delayedCall(0.1, () => ScrollTrigger.refresh());
-      }, sectionRef);
-    })();
+            // Heading part 1 — fast
+            await typeChars(part1Chars, FAST_DELAY, headingEl!, hCursor);
+            // Pause with cursor blinking
+            await new Promise<void>((r) => gsap.delayedCall(PAUSE, r));
+            // Heading part 2 — slower
+            await typeChars(part2Chars, SLOW_DELAY, headingEl!, hCursor);
+
+            // Heading done — swap to body
+            hCursor.style.display = 'none';
+            bodyEl!.style.opacity = '1';
+            await new Promise<void>((r) => gsap.delayedCall(0.15, r));
+
+            // Body paragraph
+            await typeChars(bodyChars, BODY_DELAY, bodyEl!, bCursor);
+            bCursor.style.display = 'none';
+          })();
+        }
+      },
+      { threshold: 0.5 },
+    );
+    typeObserver.observe(section);
 
     return () => {
-      ctx?.revert();
-      triggers.current.forEach((t) => t.kill());
-      triggers.current = [];
+      flickerObserver?.disconnect();
+      typeObserver.disconnect();
     };
   }, []);
 
@@ -259,6 +293,7 @@ export function AboutSection() {
 
         <h2
           ref={headingRef}
+          suppressHydrationWarning
           style={{
             fontFamily: '"Playfair Display", Georgia, serif',
             fontStyle: 'italic',
@@ -274,6 +309,7 @@ export function AboutSection() {
 
         <p
           ref={bodyRef}
+          suppressHydrationWarning
           style={{
             fontSize: 'clamp(0.875rem, 1.2vw, 1rem)',
             lineHeight: 1.8,
