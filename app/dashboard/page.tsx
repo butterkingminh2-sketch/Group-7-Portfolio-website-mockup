@@ -1,5 +1,6 @@
 import { getDb } from '@/lib/firebase-admin';
 import { LogoutButton } from '@/components/ui/LogoutButton';
+import { FeedbackCharts } from '@/components/ui/FeedbackCharts';
 import type { FeedbackEntry } from '@/types/feedback';
 
 export const dynamic = 'force-dynamic';
@@ -63,6 +64,9 @@ export default async function DashboardPage() {
           </div>
         ))}
       </div>
+
+      {/* Charts */}
+      <FeedbackCharts entries={entries} />
 
       {/* Entries */}
       {entries.length === 0 ? (
