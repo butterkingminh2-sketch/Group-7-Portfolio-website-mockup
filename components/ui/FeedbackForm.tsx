@@ -8,19 +8,28 @@ export function FeedbackForm() {
   const [rating, setRating]   = useState(0);
   const [hover, setHover]     = useState(0);
   const [status, setStatus]   = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim() || rating === 0) return;
     setStatus('sending');
+    setErrorMsg('');
     try {
       const res = await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, message, rating }),
       });
-      setStatus(res.ok ? 'sent' : 'error');
-    } catch {
+      if (res.ok) {
+        setStatus('sent');
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setErrorMsg(data.error ?? 'Unknown error');
+        setStatus('error');
+      }
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : 'Network error');
       setStatus('error');
     }
   };
@@ -114,8 +123,8 @@ export function FeedbackForm() {
       </button>
 
       {status === 'error' && (
-        <p style={{ color: 'var(--primitive-accent-mid)', fontSize: '0.8rem' }}>
-          Something went wrong — please try again.
+        <p style={{ color: 'var(--primitive-accent-mid)', fontSize: '0.8rem', fontFamily: '"JetBrains Mono", monospace' }}>
+          {errorMsg || 'Something went wrong — please try again.'}
         </p>
       )}
     </form>
