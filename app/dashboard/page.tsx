@@ -1,4 +1,5 @@
 import { getDb } from '@/lib/firebase-admin';
+import { LogoutButton } from '@/components/ui/LogoutButton';
 import type { FeedbackEntry } from '@/types/feedback';
 
 export const dynamic = 'force-dynamic';
@@ -38,9 +39,12 @@ export default async function DashboardPage() {
         <p style={{ fontSize: '0.75rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-text-muted)', marginBottom: '0.75rem' }}>
           Studio 7
         </p>
-        <h1 style={{ fontFamily: 'Anton, sans-serif', fontSize: 'clamp(2rem, 5vw, 4rem)', lineHeight: 1, textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
-          Feedback
-        </h1>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1rem' }}>
+          <h1 style={{ fontFamily: 'Anton, sans-serif', fontSize: 'clamp(2rem, 5vw, 4rem)', lineHeight: 1, textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
+            Feedback
+          </h1>
+          <LogoutButton />
+        </div>
       </div>
 
       {/* Stats */}

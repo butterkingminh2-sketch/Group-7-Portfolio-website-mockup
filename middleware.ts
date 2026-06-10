@@ -1,21 +1,24 @@
+import { jwtVerify } from 'jose';
 import { NextRequest, NextResponse } from 'next/server';
 
-export function middleware(req: NextRequest) {
-  const auth = req.headers.get('authorization') ?? '';
-  const [scheme, encoded] = auth.split(' ');
+function secret() {
+  return new TextEncoder().encode(process.env.SESSION_SECRET ?? 'dev-secret-change-me');
+}
 
-  if (scheme === 'Basic' && encoded) {
-    const decoded = Buffer.from(encoded, 'base64').toString();
-    const password = decoded.split(':').slice(1).join(':');
-    if (password === process.env.DASHBOARD_PASSWORD) {
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  if (pathname === '/dashboard/login') return NextResponse.next();
+
+  const session = req.cookies.get('session')?.value;
+  if (session) {
+    try {
+      await jwtVerify(session, secret());
       return NextResponse.next();
-    }
+    } catch {}
   }
 
-  return new NextResponse('Access denied.', {
-    status: 401,
-    headers: { 'WWW-Authenticate': 'Basic realm="Studio 7 Dashboard"' },
-  });
+  return NextResponse.redirect(new URL('/dashboard/login', req.url));
 }
 
 export const config = {
