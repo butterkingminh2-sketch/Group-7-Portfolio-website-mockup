@@ -1,10 +1,10 @@
-import { db } from '@/lib/firebase-admin';
+import { getDb } from '@/lib/firebase-admin';
 import type { FeedbackEntry } from '@/types/feedback';
 
 export const dynamic = 'force-dynamic';
 
 async function getFeedback(): Promise<FeedbackEntry[]> {
-  const snap = await db
+  const snap = await getDb()
     .collection('feedback')
     .orderBy('createdAt', 'desc')
     .get();

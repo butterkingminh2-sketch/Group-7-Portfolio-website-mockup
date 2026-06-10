@@ -1,4 +1,4 @@
-import { db } from '@/lib/firebase-admin';
+import { getDb } from '@/lib/firebase-admin';
 import { NextRequest, NextResponse } from 'next/server';
 import type { FeedbackPayload } from '@/types/feedback';
 
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Rating must be between 1 and 5.' }, { status: 400 });
     }
 
-    await db.collection('feedback').add({
+    await getDb().collection('feedback').add({
       name: name?.trim() || 'Anonymous',
       message: message.trim(),
       rating,
