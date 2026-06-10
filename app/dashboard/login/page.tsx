@@ -3,7 +3,7 @@
 import { signInWithPopup } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { auth, googleProvider } from '@/lib/firebase-client';
+import { getClientAuth, googleProvider } from '@/lib/firebase-client';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
-      const result  = await signInWithPopup(auth, googleProvider);
+      const result  = await signInWithPopup(getClientAuth(), googleProvider);
       const idToken = await result.user.getIdToken();
 
       const res = await fetch('/api/auth/session', {
