@@ -21,25 +21,29 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
       {/* Watermark — larger, anchored above the member's head */}
       <div
         data-watermark="true"
-        className="absolute inset-0 flex items-start justify-center overflow-hidden select-none"
-        style={{ zIndex: 0, paddingTop: '22vh' }}
+        className="absolute inset-0 overflow-hidden select-none"
+        style={{ zIndex: 0 }}
         aria-hidden="true"
       >
         <span
           className="font-display uppercase leading-none"
           style={{
+            position: 'absolute',
+            top: '15vh',
+            left: '65%',
             fontSize: 'clamp(8rem, 26vw, 26rem)',
             letterSpacing: '-0.02em',
             lineHeight: 0.9,
             color: 'var(--color-text-ghost)',
             display: 'block',
+            textAlign: 'center',
             textShadow: isActive
               ? '0 0 120px rgba(244,162,122,0.14), 0 0 260px rgba(177,151,252,0.09)'
               : 'none',
             animation: isActive
               ? 'slide-up 900ms cubic-bezier(0.76, 0, 0.24, 1) forwards'
               : 'none',
-            transform: isActive ? undefined : 'translateY(50px)',
+            transform: isActive ? 'translateX(-50%)' : 'translateX(-50%) translateY(50px)',
             opacity: isActive ? undefined : 0,
           }}
         >
@@ -51,14 +55,14 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
       <div
         data-cutout="true"
         className="absolute inset-0"
-        style={{ zIndex: 1 }}
+        style={{ zIndex: 1001 }}
       >
         {/* Positioning wrapper: image top at 33vh → face (~22% down portrait) lands at ~50vh */}
         <div
           style={{
             position: 'absolute',
-            top: '33vh',
-            left: '50%',
+            top: '15vh',
+            left: '65%',
             transform: 'translateX(-50%)',
           }}
         >
@@ -78,10 +82,10 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
             <Image
               src={member.avatar}
               alt={member.avatar_alt}
-              width={480}
-              height={640}
+              width={576}
+              height={768}
               loading="lazy"
-              className="object-contain max-h-[75vh] w-auto"
+              className="object-contain max-h-[82vh] w-auto"
             />
           </div>
         </div>
@@ -91,7 +95,7 @@ export function HeroSlide({ member, isActive }: HeroSlideProps) {
       <div
         className="relative w-full px-[clamp(1.25rem,5vw,5rem)] pb-16"
         style={{
-          zIndex: 2,
+          zIndex: 1002,
           animation: isActive
             ? 'slide-from-left 700ms cubic-bezier(0.76, 0, 0.24, 1) 200ms forwards'
             : 'none',

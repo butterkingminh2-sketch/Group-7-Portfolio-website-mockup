@@ -121,8 +121,112 @@ export function HeroCarousel({ members }: HeroCarouselProps) {
         ))}
       </div>
 
+      {/* Left hero content — label, heading, sub, CTA */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 'clamp(5rem, 10vh, 7rem)',
+          left: 'clamp(1.25rem, 5vw, 5rem)',
+          width: 'clamp(260px, 36vw, 480px)',
+          zIndex: 1010,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0',
+        }}
+      >
+        {/* Label */}
+        <p
+          style={{
+            fontFamily: '"DM Sans", system-ui, sans-serif',
+            fontSize: '0.875rem',
+            fontWeight: 600,
+            letterSpacing: '0.22em',
+            textTransform: 'uppercase',
+            color: 'var(--color-text-muted)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.6rem',
+            pointerEvents: 'none',
+          }}
+        >
+          <span
+            style={{
+              display: 'inline-block',
+              width: '20px',
+              height: '1px',
+              background: 'var(--color-text-muted)',
+              flexShrink: 0,
+            }}
+            aria-hidden="true"
+          />
+          Meet the team
+        </p>
+
+        {/* Heading */}
+        <h1
+          style={{
+            fontFamily: '"Playfair Display", Georgia, serif',
+            fontStyle: 'italic',
+            fontSize: 'clamp(2rem, 3.8vw, 3.25rem)',
+            fontWeight: 700,
+            lineHeight: 1.1,
+            letterSpacing: '-0.01em',
+            color: 'var(--color-text)',
+            marginTop: '1rem',
+            pointerEvents: 'none',
+          }}
+        >
+          Analytical thinking,<br />creative delivery.
+        </h1>
+
+        {/* Subheading */}
+        <p
+          style={{
+            fontFamily: '"DM Sans", system-ui, sans-serif',
+            fontSize: 'clamp(0.8rem, 1.15vw, 0.95rem)',
+            fontWeight: 400,
+            lineHeight: 1.75,
+            color: 'var(--color-text-muted)',
+            marginTop: '1rem',
+            pointerEvents: 'none',
+          }}
+        >
+          Ten business administration students at HSB University — building strategy, research, and communication that makes an impact.
+        </p>
+
+        {/* CTA */}
+        <a
+          href="#works"
+          style={{
+            fontFamily: '"DM Sans", system-ui, sans-serif',
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            letterSpacing: '0.16em',
+            textTransform: 'uppercase',
+            color: 'var(--color-text)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.7rem',
+            marginTop: '1.75rem',
+            textDecoration: 'none',
+          }}
+        >
+          <span
+            style={{
+              display: 'inline-block',
+              width: '28px',
+              height: '1px',
+              background: 'var(--color-accent-start)',
+              flexShrink: 0,
+            }}
+            aria-hidden="true"
+          />
+          Explore Our Work
+        </a>
+      </div>
+
       {/* Controls */}
-      <div className="absolute bottom-8 left-[clamp(1.25rem,5vw,5rem)] right-[clamp(1.25rem,5vw,5rem)] flex items-center justify-between z-10">
+      <div className="absolute bottom-8 left-[clamp(1.25rem,5vw,5rem)] right-[clamp(1.25rem,5vw,5rem)] flex items-center justify-between z-[1010]">
         <CarouselIndicator
           total={members.length}
           current={currentIndex}
